@@ -83,7 +83,7 @@ class Parser:
                 value = reader.read(value)
             except:
                 try:  # might throw if there is a key that is not covered in `classesForName`
-                    if parsed[-1] != '"':
+                    if parsed[-1] != '"' and self.dict_type is not str:
                         try:
                             float_val = float(value)
                             self.dict_type = int if float_val.is_integer() else float

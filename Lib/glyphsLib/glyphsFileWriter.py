@@ -121,7 +121,8 @@ class GlyphsWriter(object):
 		else:
 			if isinstance(value, unicode):
 				value = value.encode("utf-8")
-			value = feature_syntax_encode(value)
+			if forKey is None or forKey != "unicode":
+				value = feature_syntax_encode(value)
 			self.file.write(value)
 	
 	def writeKey(self, key):

@@ -17,7 +17,7 @@
 
 from __future__ import print_function
 import re, traceback, uuid
-from glyphsLib.types import transform, point, glyphs_datetime, color, floatToString, readIntlist, writeIntlist, needsQuotes, feature_syntax_encode
+from glyphsLib.types import transform, point, glyphs_datetime, color, floatToString, readIntlist, writeIntlist, needsQuotes, feature_syntax_encode, baseType
 
 from glyphsLib.parser import Parser
 from glyphsLib.glyphsFileWriter import GlyphsWriter
@@ -25,7 +25,7 @@ import collections, StringIO
 from fontTools.misc.py23 import unicode
 
 __all__ = [
-	"GSFont", "GSCustomParameter", "GSInstance", 
+	"GSFont", "GSCustomParameter", "GSInstance", "GSBase"
 ]
 
 def hint_target(line = None):
@@ -54,6 +54,8 @@ class GSBase(object):
 						value = self._defaultsForName.get(key, None)
 						if not value:
 							value = klass()
+					if value == {}:
+						value = None
 					setattr(self, key, value)
 				except:
 					pass
@@ -94,6 +96,8 @@ class GSBase(object):
 		if default is not None:
 			return default != value
 		if klass in (int, float, bool) and value == 0:
+			return False
+		if isinstance(value, baseType) and value.value is None:
 			return False
 		return True
 	
@@ -881,6 +885,7 @@ class GSLayer(GSBase):
 	}
 	_defaultsForName = {
 		"name": "Regular",
+		"width": 600
 	}
 	def __repr__(self):
 		name = self.name
@@ -897,7 +902,9 @@ class GSLayer(GSBase):
 		return "<%s \"%s\" (%s)>" % (self.__class__.__name__, name, parent)
 	def shouldWriteValueForKey(self, key):
 		if key == "associatedMasterId":
-			return self.layerId != self.associatedMasterId:
+			return self.layerId != self.associatedMasterId
+		if key in ("width"):
+			return True
 		return super(GSLayer, self).shouldWriteValueForKey(key)
 		
 	@property
