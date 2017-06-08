@@ -79,9 +79,9 @@ class GSBase(object):
 				if new_type is unicode:
 					value = value.decode('utf-8')
 				else:
-					try:
+					if hasattr(new_type, 'read'):
 						value = new_type().read(value)
-					except:
+					else:
 						value = new_type(value)
 			key = self._wrapperKeysTranslate.get(key, key)
 			setattr(self, key, value)
@@ -539,7 +539,6 @@ class GSCustomParameter(GSBase):
 
 
 class GSAlignmentZone(GSBase):
-	
 	def __init__(self, line = None, pos = 0, size = 20):
 		if line:
 			super(GSAlignmentZone, self).__init__(line)
@@ -1068,13 +1067,16 @@ class GSFont(GSBase):
 			fp = open(path)
 			p = Parser()
 			#logger.info('Parsing .glyphs file')
-			print("____loads")
+#			print("____loads")
 			p.parse_into_object(self, fp.read())
 			fp.close()
 		
 	
 	def __repr__(self):
-		return "<%s \"%s\">" % (self.__class__.__name__, self.familyName)
+		if hasattr(self, 'familyName'):
+			return "<%s \"%s\">" % (self.__class__.__name__, self.familyName)
+		else:
+			return "<%s>" % (self.__class__.__name__)
 	
 	def shouldWriteValueForKey(self, key):
 		if key in ("unitsPerEm","versionMinor"):

@@ -56,14 +56,18 @@ class point(object):
 	def plistValue(self):
 		assert isinstance(self.value, list) and len(self.value) == self.dimension
 		return '"{%s}"' % (', '.join(floatToString(v, 3) for v in self.value))
+
 	def __getitem__(self, key):
-		if type(key) is int and key < self.dimension:
-			if key < len(self.value):
-				return self.value[key]
-			else:
-				return 0
-		else:
-			raise KeyError
+		return self.value[key]
+#		if type(key) is int and key < self.dimension:
+#			return self.value[key]
+#			if key < len(self.value):
+#				return self.value[key]
+#			else:
+#				return 0
+#		else:
+#			raise KeyError
+
 	def __setitem__(self, key, value):
 		if type(key) is int and key < self.dimension:
 			while self.dimension > len(self.value):
@@ -107,9 +111,9 @@ class glyphs_datetime(baseType):
 class color(baseType):
 
 	def read(self, src = None):
-		if src is None:
+		if src == None:
 			return None
-		if src[0] == "(":
+		elif src[0] == "(":
 			src = src[1:-1]
 			color = src.split(",")
 			color = tuple([int(c) for c in color])

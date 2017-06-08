@@ -50,7 +50,7 @@ def loads(value):
     """
     p = Parser(dict_type = GSFont)
     logger.info('Parsing .glyphs file')
-    print("____loads")
+#    print("____loads")
     data = p.parse(value)
     logger.info('Casting parsed values')
     return data

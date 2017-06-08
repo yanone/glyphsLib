@@ -391,6 +391,7 @@ def normalize_custom_param_name(name):
 def set_blue_values(ufo, alignment_zones):
     """Set postscript blue values from Glyphs alignment zones."""
 
+
     blue_values = []
     other_blues = []
     for zone in sorted(alignment_zones):
@@ -410,7 +411,7 @@ def set_robofont_guidelines(ufo_obj, glyphs_data, is_global=False):
         return
     new_guidelines = []
     for guideline in guidelines:
-        
+
         x, y = guideline.position
         angle = guideline.angle
         new_guideline = {'x': x, 'y': y, 'angle': angle, 'isGlobal': is_global}
@@ -636,7 +637,7 @@ def load_glyph(ufo_glyph, layer, glyph_data):
 
     glyphlib_prefix = GLYPHS_PREFIX + 'Glyphs.'
     uval = glyph_data.unicode
-    if uval is not None:
+    if uval is not None and uval != '':
         ufo_glyph.unicode = int(uval, 16)
     note = glyph_data.note
     if note is not None:
@@ -645,7 +646,7 @@ def load_glyph(ufo_glyph, layer, glyph_data):
     if last_change is not None:
         ufo_glyph.lib[glyphlib_prefix + 'lastChange'] = to_ufo_time(last_change)
     color_index = glyph_data.color
-    if color_index is not None and color_index >= 0:
+    if type(color_index) == int and color_index >= 0:
         ufo_glyph.lib[glyphlib_prefix + 'ColorIndex'] = color_index
         ufo_glyph.lib[PUBLIC_PREFIX + 'markColor'] = GLYPHS_COLORS[color_index]
     export = glyph_data.export
